@@ -3,6 +3,8 @@ on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,3 +28,10 @@ jobs:
         with:
           name: medlog-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER=$(grep -o 'Version 0\.[0-9]*' index.html | head -1 | sed 's/Version //')
+          cp android/app/build/outputs/apk/debug/app-debug.apk medlog-v$VER.apk
+          gh release create "v$VER-${{ github.run_number }}" "medlog-v$VER.apk" --title "Medlog v$VER" --notes "Android APK (debug build)"
