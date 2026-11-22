@@ -16,7 +16,7 @@ jobs:
         run: |
           mkdir -p www && cp index.html www/index.html
           npm init -y
-          npm i @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 @capacitor/filesystem@7 @capacitor/share@7
+          npm i @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 @capacitor/filesystem@7 @capacitor/share@7 @capacitor/camera@7
           npx cap init "服薬ノート" com.medlog.app --web-dir www
           npx cap add android
           sed -i 's#<application#<uses-permission android:name="android.permission.CAMERA" />\n    <application#' android/app/src/main/AndroidManifest.xml
