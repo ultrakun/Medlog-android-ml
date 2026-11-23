@@ -21,6 +21,21 @@ jobs:
           npm i @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 @capacitor/filesystem@7 @capacitor/share@7 @capacitor/camera@7
           npx cap init "服薬ノート" com.medlog.app --web-dir www
           npx cap add android
+          unzip -q -o icon3.zip -d icon
+          RES=android/app/src/main/res
+          find $RES -name 'ic_launcher*' -delete
+          cp -r icon/mipmap-* $RES/
+          cp icon/ic_launcher_foreground.png icon/ic_launcher_background.png $RES/mipmap-xxxhdpi/
+          mkdir -p $RES/mipmap-anydpi-v26
+          for n in ic_launcher ic_launcher_round; do
+          cat > $RES/mipmap-anydpi-v26/$n.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+            <background android:drawable="@mipmap/ic_launcher_background"/>
+            <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+          </adaptive-icon>
+          EOF
+          done
           sed -i 's#<application#<uses-permission android:name="android.permission.CAMERA" />\n    <application#' android/app/src/main/AndroidManifest.xml
           npx cap sync android
           cd android && chmod +x gradlew && ./gradlew assembleDebug
